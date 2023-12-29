@@ -1,3 +1,4 @@
+---cccc
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local PG = LP.PlayerGui
@@ -19,7 +20,7 @@ local VIM = game:service("VirtualInputManager")
 local LunarLoader = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-local Window = LunarLoader:CreateWindow({Title = "LunarZ Hub ", SubTitle = "by Hirimii", TabWidth = 160, Size = UDim2.fromOffset(400, 360), Acrylic = true, Theme = "Dark", MinimizeKey = Enum.KeyCode.LeftControl})
+local Window = LunarLoader:CreateWindow({Title = "LunarZ Hub ", SubTitle = "by Hirimii", TabWidth = 160, Size = UDim2.fromOffset(500, 360), Acrylic = true, Theme = "Dark", MinimizeKey = Enum.KeyCode.LeftControl})
 local Z = Window:AddTab({ Title = "About", Icon = "rbxassetid://15782111043" })
 local M = Window:AddTab({ Title = "Main Farm", Icon = "rbxassetid://4483345998" })
 local B = Window:AddTab({ Title = "Setting", Icon = "settings" })
@@ -73,26 +74,6 @@ function Notify(G, H, I)
     end
     HirimiHub:MakeNotification({Name = G, Content = H, Image = "rbxassetid://15214658898", Time = I})
 end
-RandomCFrame = CFrame.new(0, 30, 0)
-spawn(function()
-    while wait() do
-        wait()
-        pcall(function()
-            if game.Players.LocalPlayer.Character.Stun.Value ~= 0 then
-                RandomCFrameChoices = {
-                    CFrame.new(15, 30, 20),
-                    CFrame.new(-20, 30, -15),
-                    CFrame.new(0, 30, 20),
-                    CFrame.new(0, 30, -20)
-                }
-                RandomCFrameIndex = math.random(0, #RandomCFrameChoice)
-                RandomCFrameChoice = RandomCFrameChoices[RandomCFrameIndex]
-                RandomCFrame = RandomCFrameChoice
-                wait(.5)
-            end
-        end)
-    end
-end)
 spawn(function()
     while wait() do
         for i,v in pairs(Enemies:GetChildren()) do
