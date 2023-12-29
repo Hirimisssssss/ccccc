@@ -1,3 +1,21 @@
+local P = game:GetService("Players")
+local LP = P.LocalPlayer
+local PG = LP.PlayerGui
+local RS = game:GetService("ReplicatedStorage")
+local Remotes = RS:WaitForChild("Remotes")
+local Remote = Remotes:WaitForChild("CommF_")
+local RunS = game:GetService("RunService")
+local Loop = RunS.RenderStepped
+local Data = LP.Data
+local WS = game:GetService("Workspace")
+local WO = WS["_WorldOrigin"]
+local VU = game:GetService("VirtualUser")
+local EnemySpawns = WO.EnemySpawns
+local Enemies = WS.Enemies
+local CameraShaker = require(RS.Util.CameraShaker)
+local GuideModule = require(RS.GuideModule)
+local Quests = require(RS.Quests)
+local VIM = game:service("VirtualInputManager")
 local LunarLoader = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -22,10 +40,38 @@ else
 end
 function GetDistance(q)
     if typeof(q) == "CFrame" then
-        return game.Players.LocalPlayer:DistanceFromCharacter(q.Position)
+        return LP:DistanceFromCharacter(q.Position)
     elseif typeof(q) == "Vector3" then
-        return game.Players.LocalPlayer:DistanceFromCharacter(q)
+        return LP:DistanceFromCharacter(q)
     end
+end
+function TeleportSeaIfWrongSea(world)
+    if world == 1 then
+        if not game.PlaceId == 2753915549 then
+            RS.Remotes.CommF_:InvokeServer("TravelMain")
+            wait()
+        end
+    elseif world == 2 then
+        if not game.PlaceId == 4442272183 then
+            RS.Remotes.CommF_:InvokeServer("TravelDressrosa")
+        end
+    elseif world == 3 then
+        if not game.PlaceId == 7449423635 then
+            RS.Remotes.CommF_:InvokeServer("TravelZou")
+        end
+    end
+end
+function Notify(G, H, I)
+    if G == nil or G == "" then
+        G = "Not Titled"
+    end
+    if H == nil or H == "" then
+        H = "No Any Descriptions"
+    end
+    if type(I) ~= "number" then
+        I = 10
+    end
+    HirimiHub:MakeNotification({Name = G, Content = H, Image = "rbxassetid://15214658898", Time = I})
 end
 function CheckNearestTeleporter(P)
     local min = math.huge
@@ -40,7 +86,7 @@ function CheckNearestTeleporter(P)
             ["5"] = Vector3.new(-11993.580078125, 334.7812805175781, -8844.1826171875),
             ["6"] = Vector3.new(5314.58203125, 25.419387817382812, -125.94227600097656)
         }
-    elseif Dressrosa then
+    elseif Dressora then
         TableLocations = {
             ["1"] = Vector3.new(-288.46246337890625, 306.130615234375, 597.9988403320312),
             ["2"] = Vector3.new(2284.912109375, 15.152046203613281, 905.48291015625),
@@ -104,7 +150,7 @@ function RemoveLvTitle(mob)
     return mob
 end
 function CheckQuest()
-    local Lvl = game.Players.LocalPlayer.Data.Level.Value
+    local Lvl = Data.Level.Value
     local IgnoreQuests = {"BartiloQuest", "Trainees", "MarineQuest", "CitizenQuest"}
     local Quest = {}
     local LevelReq = 0
@@ -131,7 +177,6 @@ function CheckQuest()
     end
 	return Quest
 end
-
 function QuestDungKo(mob)
     if GuideModule["Data"]["QuestData"]["Name"] == mob then
         return true
@@ -150,8 +195,8 @@ function GetMob()
 end
 function GetPosMob(Mob)
     local CFrameTab = {}
-	if game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:FindFirstChild(Mob) then
-    	for i, v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
+	if EnemySpawns:FindFirstChild(Mob) then
+    	for i, v in pairs(EnemySpawns:GetChildren()) do
     	    if v:IsA("Part") and v.Name == Mob then
 	            table.insert(CFrameTab, v.CFrame)
 	        end
@@ -170,7 +215,7 @@ function GetQuest()
     local Distance = GetDistance(NPCPos())
     local questname, id = CheckQuest()["QuestName"], CheckQuest()["ID"]
     if Distance <= 20 then
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", questname, id)
+        Remote:InvokeServer("StartQuest", questname, id)
         NoClip = false
     else
         if Distance > 2000 then
@@ -180,7 +225,7 @@ function GetQuest()
         end
         NoClip = true
     end
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
+    Remote:InvokeServer("SetSpawnPoint")
 end
 spawn(function()
     game:GetService("RunService").Stepped:Connect(function()
