@@ -1,4 +1,3 @@
---cccc
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local PG = LP.PlayerGui
@@ -72,10 +71,8 @@ function Notify(G, H, I)
     if type(I) ~= "number" then
         I = 10
     end
-    LunarLoader:Notify({Title = G, Content = H, SubContent = "LunarZ", Duration = I
-    })
+    HirimiHub:MakeNotification({Name = G, Content = H, Image = "rbxassetid://15214658898", Time = I})
 end
-
 function CheckNearestTeleporter(P)
     local min = math.huge
     local min2 = math.huge
@@ -169,11 +166,11 @@ function CheckQuest()
 			end	
 		end
 	end
-	if LevelReq >= 700 and Main then
+	if LevelReq >= 700 and Sea1 then
         Quest["MobName"] = "Galley Captain"
         Quest["QuestName"] = "FountainQuest"
         Quest["ID"] = 2
-    elseif LevelReq >= 1450 and Dressora then
+    elseif LevelReq >= 1450 and Sea2 then
         Quest["MobName"] = "Water Fighter"
         Quest["QuestName"] = "ForgottenQuest"
         Quest["ID"] = 2
@@ -475,12 +472,21 @@ function CheckElite()
     end
 end
 function BDistanceElite()
-    if RS:FindFirstChild("Deandre") or RS:FindFirstChild("Urban") or RS:FindFirstChild("Diablo") then
-        local v = RS:FindFirstChild("Deandre") or RS:FindFirstChild("Urban") or RS:FindFirstChild("Diablo")
-        if GetDistance(RS:FindFirstChild("Deandre").HumanoidRootPart.Position) > 2000 or GetDistance(RS:FindFirstChild("Urban").HumanoidRootPart.Position) > 2000 or GetDistance(RS:FindFirstChild("Diablo").HumanoidRootPart.Position) > 2000 then
-            BypassTele(v.HumanoidRootPart.CFrame)
-        elseif GetDistance(v.HumanoidRootPart.Position) < 2000 then
-            ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+    if RS:FindFirstChild("Deandre") or RS:FindFirstChild("Deandre") or RS:FindFirstChild("Diablo") then
+        if GetDistance(RS:FindFirstChild("Deandre").HumanoidRootPart.Position) > 2000 then
+            BypassTele(RS:FindFirstChild("Deandre").HumanoidRootPart.CFrame)
+        elseif GetDistance(RS:FindFirstChild("Deandre").HumanoidRootPart.Position) < 2000 then
+            ToTween(RS:FindFirstChild("Deandre").HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+        end
+        if GetDistance(RS:FindFirstChild("Urban").HumanoidRootPart.Position) > 2000 then
+            BypassTele(RS:FindFirstChild("Urban").HumanoidRootPart.CFrame)
+        elseif GetDistance(RS:FindFirstChild("Urban").HumanoidRootPart.Position) < 2000 then
+            ToTween(RS:FindFirstChild("Urban").HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+        end
+        if GetDistance(RS:FindFirstChild("Diablo").HumanoidRootPart.Position) > 2000 then
+            BypassTele(RS:FindFirstChild("Diablo").HumanoidRootPart.CFrame)
+        elseif GetDistance(RS:FindFirstChild("Diablo").HumanoidRootPart.Position) < 2000 then
+            ToTween(RS:FindFirstChild("Diablo").HumanoidRootPart.CFrame * CFrame.new(0,30,0))
         end
     end
 end
@@ -550,7 +556,7 @@ function CheckMasSkill()
 end
 spawn(function()
     while wait() do
-        if StartFarms then
+        if StartFarms or SaberQ or Eliten then
             NoClip = true
         else
             StopTween()
@@ -1257,12 +1263,30 @@ A:AddButton({
     Title = "Redeem All Code X2",
     Description = "Click Redeem Code",
     Callback = function()
-        function RedeemCode(vcc)
-            RS.Remotes.Redeem:InvokeServer(vcc)
-        end
-        for i,v in pairs(x2Code) do
-            RedeemCode(v)
-        end
+        Window:Dialog({
+            Title = "Title",
+            Content = "This is a dialog",
+            Buttons = {
+                {
+                    Title = "Confirm",
+                    Callback = function()
+                        print("Confirmed the dialog.")
+                        function RedeemCode(vcc)
+                            RS.Remotes.Redeem:InvokeServer(vcc)
+                        end
+                        for i,v in pairs(x2Code) do
+                            RedeemCode(v)
+                        end
+                    end
+                },
+                {
+                    Title = "Cancel",
+                    Callback = function()
+                        print("Cancelled the dialog.")
+                    end
+                }
+            }
+        })
     end
 })
 A:AddSection({Name = "Option"})
