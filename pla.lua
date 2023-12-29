@@ -3015,4 +3015,3 @@ end)
 --     HopServer()
 -- end    
 -- })
-HirimiHub:Init()
