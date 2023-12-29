@@ -1,4 +1,3 @@
---mAIJDJCA
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local PG = LP.PlayerGui
@@ -74,6 +73,45 @@ function Notify(G, H, I)
     end
     HirimiHub:MakeNotification({Name = G, Content = H, Image = "rbxassetid://15214658898", Time = I})
 end
+RandomCFrame = CFrame.new(0, 30, 0)
+spawn(function()
+    while wait() do
+        wait()
+        pcall(function()
+            if game.Players.LocalPlayer.Character.Stun.Value ~= 0 then
+                RandomCFrameChoices = {
+                    CFrame.new(15, 30, 20),
+                    CFrame.new(-20, 30, -15),
+                    CFrame.new(0, 30, 20),
+                    CFrame.new(0, 30, -20)
+                }
+                RandomCFrameIndex = math.random(0, #RandomCFrameChoice)
+                RandomCFrameChoice = RandomCFrameChoices[RandomCFrameIndex]
+                RandomCFrame = RandomCFrameChoice
+                wait(.5)
+            end
+        end)
+    end
+end)
+spawn(function()
+    while wait() do
+        for i,v in pairs(Enemies:GetChildren()) do
+            if ((StartFarm and ModeFarm == "Level" and StartBring and v.Name == CheckQuest()["MobName"]) or (FarmSkip and StartBring and v.Name == "Shanda") or (StartFarms and SelectFarm == "Bone" and StartBring and CheckBoneMob()) or (StartFarms and SelectFarm == "Cake Prince" and StartBring and CheckCakeMob())) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and GetDistance(v.HumanoidRootPart.Position) <= 300 then
+                v.HumanoidRootPart.CFrame = PosMon
+                v.HumanoidRootPart.Size = Vector3.new(1,1,1)                                               
+                v.HumanoidRootPart.CanCollide = false
+                v.Head.CanCollide = false
+                v.Humanoid.JumpPower = 0
+                v.Humanoid.WalkSpeed = 0
+                if v.Humanoid:FindFirstChild("Animator") then
+                    v.Humanoid.Animator:Destroy()
+                end
+                v.Humanoid:ChangeState(14)
+                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  math.huge)
+            end
+        end
+    end
+end)
 function CheckNearestTeleporter(P)
     local min = math.huge
     local min2 = math.huge
@@ -149,6 +187,61 @@ end
 function RemoveLvTitle(mob)
     mob = mob:gsub(" %pLv. %d+%p", "")
     return mob
+end
+function FunctionFoldermob()
+    print("FunctionFoldermob")
+    repeat
+        wait()
+        if game.Workspace:FindFirstChild("MobSpawns") then
+            game.Workspace.MobSpawns:Destroy()
+        end
+    until not game.Workspace:FindFirstChild("MobSpawns")
+    local K = Instance.new("Folder")
+    K.Parent = game.Workspace
+    K.Name = "MobSpawns"
+    wait()
+    repeat
+        wait()
+    until game.Workspace:FindFirstChild("MobSpawns")
+    for r, v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
+        local a = v:Clone()
+        a.Parent = game.Workspace.MobSpawns
+    end
+    local L = {}
+    for r, v in next, require(game:GetService("ReplicatedStorage").Quests) do
+        for M, N in next, v do
+            for O, P in next, N.Task do
+                if P > 1 then
+                    table.insert(L, O)
+                end
+            end
+        end
+    end
+    if string.find(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()[1].Name, "Lv.") then
+        for r, v in pairs(getnilinstances()) do
+            if table.find(L, tostring(v.Name:gsub(" %pLv. %d+%p", ""))) then
+                local a = v:Clone()
+                a.Parent = game.Workspace.MobSpawns
+            end
+        end
+    else
+        for r, v in pairs(getnilinstances()) do
+            if table.find(L, v.Name) then
+                local a = v:Clone()
+                if a.Parent then
+                    a.Parent = game.Workspace.MobSpawns
+                end
+            end
+        end
+    end
+end
+FunctionFoldermob()
+function MobSpawnCheck(cc)
+    for r, v in next, game.Workspace.MobSpawns:GetChildren() do
+        if v.Name == cc then
+            return v
+        end
+    end
 end
 function CheckQuest()
     local Lvl = Data.Level.Value
@@ -228,6 +321,23 @@ function GetQuest()
     end
     Remote:InvokeServer("SetSpawnPoint")
 end
+function EClick()
+    game:GetService("VirtualUser"):CaptureController()
+    game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+end
+function EWeapon(tool)
+    if game.Players.LocalPlayer.Backpack:FindFirstChild(tool) then
+        wait(.5)
+        Tool = game.Players.LocalPlayer.Backpack:FindFirstChild(tool)
+        wait(.5)
+        game.Players.LocalPlayer.Character.Humanoid:EquipTool(Tool)
+    end
+end
+function EBuso()
+    if not game:GetService("Players").LocalPlayer.Character:FindFirstChild("HasBuso") then
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+    end
+end
 spawn(function()
     game:GetService("RunService").Stepped:Connect(function()
         if NoClip then
@@ -253,6 +363,15 @@ spawn(function()
         end
     end)
 end)
+spawn(function()
+    while wait() do
+        if StartFarm then
+            NoClip = true
+        else
+            NoClip = false
+        end
+    end
+end)
 function BypassTele(PosSelect)
     if GetDistance(PosSelect.Position) >= 2000 and LP.Character.Humanoid.Health > 0 then
         game.Players.LocalPlayer.Character.Head:Destroy()
@@ -260,6 +379,12 @@ function BypassTele(PosSelect)
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = PosSelect
             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
         end
+    end
+end
+function DisableTween(v0)
+    if not v0 then
+        NoClip = false
+        ToTween(LP.Character.HumanoidRootPart.CFrame)
     end
 end
 local SelectTool = M:AddDropdown("SelectTool",{Title = "Select Tool", Values = {"Melee", "Sword"}, Multi = false, Callback = function(vSt)
@@ -375,6 +500,7 @@ local FastT = M:AddToggle("FastT", {Title = "Enable Fast Attack", Callback = fun
     _G.FastAttack = vFastT
     end
 })
+FastT:SetValue(true)
 local CameraShaker = require(game.ReplicatedStorage.Util.CameraShaker)
 CombatFrameworkR = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
 y = debug.getupvalues(CombatFrameworkR)[2]
@@ -403,7 +529,61 @@ spawn(function()
 		end
 	end)
 end)
-M:AddToggle("BTP", {Title = "Bypass Teleport", Callback = function(vBTP)
+local BTP = M:AddToggle("BTP", {Title = "Bypass Teleport", Callback = function(vBTP)
     BypassTP = vBTP
     end
 })
+M:AddParagraph({Title = "Mode Farm", Content = ".........."})
+local ModeFarm = M:AddDropdown("Select Mode Farm",{Title = "Select Mode Farm", Values = {"Level", "Cake Prince", "Bone"}, Multi = false, Callback = function(vModeFarm)
+    ModeFarm = vModeFarm
+end
+})
+local ModeFarmT = M:AddToggle("Start Farm", {Title = "Start Farm", Callback = function(vStartFarm)
+    StartFarm = vStartFarm
+    DisableTween(StartFarm)
+    end
+})
+spawn(function()
+    while task.wait() do
+        if ModeFarm == "Level" and StartFarm then
+            local Quest = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
+            if Quest.Visible == true then
+                if not QuestDungKo(CheckQuest()["MobName"]) then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
+                else      
+                    if game.Workspace.Enemies:FindFirstChild(CheckQuest()["MobName"]) then     
+                        for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+                            if v.Name == CheckQuest()["MobName"] and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                                if not MasteryOption then
+                                    repeat task.wait()
+                                        EWeapon(selecttool)                                                                                                                    
+                                        EBuso()
+                                        ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                                        v.HumanoidRootPart.Size = Vector3.new(50,50,50)  
+                                        v.HumanoidRootPart.CanCollide = false
+                                        PosMon = v.HumanoidRootPart.CFrame
+                                        EClick()
+                                        StartBring = true
+                                    until not StartFarms or not SelectFarm == "Level" or v.Humanoid.Health <= 0 or not v:FindFirstChild("HumanoidRootPart")
+                                    StartBring = false
+                                end
+                            end
+                        end
+                    else
+                        getttt = game.workspace.MobSpawns:FindFirstChild(CheckQuest()["MobName"])
+                        if getttt and not game.Workspace.Enemies:FindFirstChild(CheckQuest()["MobName"]) and StartFarm then
+                            ToTween(MobSpawnCheck(CheckQuest()["MobName"]).CFrame * CFrame.new(0, 15, 8))
+                            concac2 = Instance.new("Part")
+                            concac2.Parent = MobSpawnCheck(CheckQuest()["MobName"])
+                            concac2.Name = "concac2"
+                        elseif not getttt then
+                            FunctionFoldermob()
+                        end
+                    end
+                end   
+            else
+                GetQuest()
+            end
+        end
+    end
+end)
