@@ -1,3 +1,4 @@
+--mAIJDJCA
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local PG = LP.PlayerGui
@@ -402,7 +403,7 @@ spawn(function()
 		end
 	end)
 end)
-M:AddToggle("BTP", {Title = "Enable Fast Attack", Callback = function(vBTP)
+M:AddToggle("BTP", {Title = "Bypass Teleport", Callback = function(vBTP)
     BypassTP = vBTP
     end
 })
