@@ -1,3 +1,4 @@
+--cccc
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local PG = LP.PlayerGui
@@ -549,7 +550,7 @@ function CheckMasSkill()
 end
 spawn(function()
     while wait() do
-        if StartFarms or SaberQ or Eliten then
+        if StartFarms then
             NoClip = true
         else
             StopTween()
@@ -1252,17 +1253,6 @@ function BypassTele(PosSelect)
         end
     end
 end
-local Window = HirimiHub:MakeWindow({Name = "Hirimi Hub", HidePremium = false, SaveConfig = false, ConfigFolder = "Hirimi Hub Main"})
-local A = Window:MakeTab({Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-local B = Window:MakeTab({Name = "Setting", Icon = "rbxassetid://11446835336", PremiumOnly = false})
-local C = Window:MakeTab({Name = "Raid", Icon = "rbxassetid://11155986081", PremiumOnly = false})
-local D = Window:MakeTab({Name = "Item Quest", Icon = "rbxassetid://9606626859", PremiumOnly = false})
-local E = Window:MakeTab({Name = "Status", Icon = "rbxassetid://11156061121", PremiumOnly = false})
-local F = Window:MakeTab({Name = "Race Upgrade", Icon = "rbxassetid://11162889532", PremiumOnly = false})
-local G = Window:MakeTab({Name = "Sea Event", Icon = "rbxassetid://7040410130", PremiumOnly = false})
-local H = Window:MakeTab({Name = "Shop", Icon = "rbxassetid://6031265976", PremiumOnly = false})
-local I = Window:MakeTab({Name = "Devil Fruit", Icon = "rbxassetid://11156061121", PremiumOnly = false})
-local K = Window:MakeTab({Name = "Miscellaneous", Icon = "rbxassetid://7044233235", PremiumOnly = false})
 A:AddButton({
     Title = "Redeem All Code X2",
     Description = "Click Redeem Code",
