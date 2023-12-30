@@ -1,3 +1,4 @@
+--
 Pos = 1
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
@@ -214,12 +215,7 @@ function GetQuest()
         Remote:InvokeServer("StartQuest", questname, id)
         NoClip = false
     else
-        if Distance > 2000 then
-            BypassTele(NPCPos())
-        else
-            ToTween(NPCPos())
-        end
-        NoClip = true
+        ToTween(NPCPos())
     end
     Remote:InvokeServer("SetSpawnPoint")
 end
@@ -1443,7 +1439,11 @@ spawn(function()
                         end
                     end   
                 else
-                    GetQuest()
+                    if GetDistance(RS:FindFirstChild(CheckQuest()["MobName"]).HumanoidRootPart.Position) > 2000 then
+                        BypassTele(RS:FindFirstChild(CheckQuest()["MobName"]).HumanoidRootPart.CFrame)
+                    else
+                        GetQuest()
+                    end
                 end
             elseif StartFarms and SelectFarm == "Bone" then
                 if CheckBoneMob() then
