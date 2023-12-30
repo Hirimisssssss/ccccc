@@ -1253,7 +1253,7 @@ A:AddButton({
         end
     end
 })
-local selectttolll = Main:AddDropdown("SelectTool",{Title = "Select Tool", Values = {"Melee","Sword"}, Multi = false, Callback = function(vSelecttool)
+local selectttolll = A:AddDropdown("SelectTool",{Title = "Select Tool", Values = {"Melee","Sword"}, Multi = false, Callback = function(vSelecttool)
     Selecttool = vSelecttool
     end
 })
