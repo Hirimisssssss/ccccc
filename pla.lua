@@ -1245,33 +1245,14 @@ A:AddButton({
     Title = "Redeem All Code X2",
     Description = "Click Redeem Code",
     Callback = function()
-        Window:Dialog({
-            Title = "Title",
-            Content = "This is a dialog",
-            Buttons = {
-                {
-                    Title = "Confirm",
-                    Callback = function()
-                        print("Confirmed the dialog.")
-                        function RedeemCode(vcc)
-                            RS.Remotes.Redeem:InvokeServer(vcc)
-                        end
-                        for i,v in pairs(x2Code) do
-                            RedeemCode(v)
-                        end
-                    end
-                },
-                {
-                    Title = "Cancel",
-                    Callback = function()
-                        print("Cancelled the dialog.")
-                    end
-                }
-            }
-        })
+        function RedeemCode(vcc)
+            RS.Remotes.Redeem:InvokeServer(vcc)
+        end
+        for i,v in pairs(x2Code) do
+            RedeemCode(v)
+        end
     end
 })
-A:AddSection({Name = "Option"})
 local selectttolll = Main:AddDropdown("SelectTool",{Title = "Select Tool", Values = {"Melee", "Sword"}, Multi = false, Callback = function(vSelecttool)
     Selecttool = vSelecttool
     end
