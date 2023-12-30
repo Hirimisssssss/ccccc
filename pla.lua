@@ -1253,7 +1253,7 @@ A:AddButton({
         end
     end
 })
-local selectttolll = Main:AddDropdown("SelectTool",{Title = "Select Tool", Values = {"Melee", "Sword"}, Multi = false, Callback = function(vSelecttool)
+local selectttolll = Main:AddDropdown("SelectTool",{Title = "Select Tool", Values = {"Melee","Sword"}, Multi = false, Callback = function(vSelecttool)
     Selecttool = vSelecttool
     end
 })
@@ -1266,7 +1266,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 end)
 local v1f = {"0", "0.15", "0.175", "0.2"}
 _G.FastAttackDelay = 0.175
-local selectttolll = A:AddDropdown("SelectTool",{Title = "Select Tool", Values = v1f, Multi = false, Callback = function(FastDelays)
+local Fastattackd = A:AddDropdown("Fast Attack Delay",{Title = "Fast Attack Delay", Values = v1f, Multi = false, Callback = function(FastDelays)
     _G.FastAttackDelay = FastDelays
     end
 })
