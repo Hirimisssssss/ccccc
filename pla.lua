@@ -1,3 +1,4 @@
+Pos = 1
 local P = game:GetService("Players")
 local LP = P.LocalPlayer
 local PG = LP.PlayerGui
@@ -121,29 +122,24 @@ function CheckNearestTeleporter(P)
     end
 end
 function ToTween(Positions)
-    Distance = (Positions.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-    if Distance < 25 then
-        Speed = 5000
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Positions
-    elseif Distance < 50 then
-        Speed = 2000
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Positions
-    elseif Distance < 150 then
-        Speed = 800
-    elseif Distance < 250 then
-        Speed = 600
-    elseif Distance < 500 then
-        Speed = 400
-    elseif Distance < 750 then
-        Speed = 300
-    elseif Distance >= 1000 then
-        Speed = 290
+    if LP.Character and LP.Character:FindFirstChild("Humanoid") and LP.Character.Humanoid.Health > 0 then
+        if not Speed or typeof(Speed) ~= "number" then
+            Speed = 325
+        end
+        Dis = GetDistance(Positions)       
+        if Dis <= 300 then
+            LP.Character.PrimaryPart.CFrame = Positions
+        end
+        tween = game:GetService("TweenService"):Create(LP.Character.PrimaryPart,TweenInfo.new(Dis/Speed, Enum.EasingStyle.Linear),{CFrame = Positions})
+        local ac = CheckNearestTeleporter(Positions)
+        if ac then
+            pcall(function()
+                tween:Cancel()
+            end)
+            TpEntrance(ac)
+        end
+        tween:Play()
     end
-    game:GetService("TweenService"):Create(
-        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
-        TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
-        {CFrame = Positions}
-    ):Play()
 end
 function RemoveLvTitle(mob)
     mob = mob:gsub(" %pLv. %d+%p", "")
@@ -1414,49 +1410,36 @@ spawn(function()
     while wait() do
         pcall(function()
             if StartFarms and SelectFarm == "Level" then         
-                local Quest = game:GetService("Players").LocalPlayer.PlayerGui.Main.Quest
+                local Quest = PG.Main.Quest
                 if Quest.Visible == true then
                     if not QuestDungKo(CheckQuest()["MobName"]) then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
-                    else      
-                        if game.Workspace.Enemies:FindFirstChild(CheckQuest()["MobName"]) then     
-                            for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-                                if v.Name == CheckQuest()["MobName"] and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                                    if not MasteryOption then
-                                        repeat task.wait()
-                                            fast:Set(true)
-                                            EWeapon(Selecttool)                                                                                                                    
-                                            EBuso()
-                                            ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
-                                            v.HumanoidRootPart.Size = Vector3.new(50,50,50)  
-                                            v.HumanoidRootPart.CanCollide = false
-                                            PosMon = v.HumanoidRootPart.CFrame
-                                            EClick()
-                                            StartBring = true
-                                        until not StartFarms or not SelectFarm == "Level" or v.Humanoid.Health <= 0 or not v:FindFirstChild("HumanoidRootPart")
-                                        StartBring = false
-                                    else
-                                        Healthb = v.Humanoid.MaxHealth * HealthStop/100
-                                        repeat task.wait()
-                                            if v.Humanoid.Health > Healthb then
-                                                EWeapon(Selecttool)                                                                                                                    
-                                                EBuso()
-                                                ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
-                                                v.HumanoidRootPart.Size = Vector3.new(50,50,50)  
-                                                v.HumanoidRootPart.CanCollide = false
-                                                PosMon = v.HumanoidRootPart.CFrame
-                                                EClick()
-                                                StartBring = true
-                                            else
-                                                KillAtMas()
-                                            end
-                                        until not StartFarms or not SelectFarm == "Level" or v.Humanoid.Health <= 0 or not v:FindFirstChild("HumanoidRootPart")
-                                        StartBring = false
-                                    end
+                        Remote:InvokeServer("AbandonQuest")
+                    else       
+                        if Enemies:FindFirstChild(CheckQuest()["MobName"]) then     
+                            for i,v in pairs(Enemies:GetChildren()) do
+                                if v.Name == CheckQuest()["MobName"] and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0  then
+                                    repeat task.wait()
+                                        EquipTool(Selecttool)                                                                                                                    
+                                        EBuso()
+                                        ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+                                        PosMon = v.HumanoidRootPart.CFrame                                                                                                                        
+                                        v.HumanoidRootPart.Size = Vector3.new(1, 1, 1)
+                                        v.HumanoidRootPart.CanCollide = false
+                                        v.Head.CanCollide = false
+                                        sethiddenproperty(LP, "SimulationRadius",  math.huge)         
+                                        StartBring = true
+                                    until not QuestDungKo(CheckQuest()["MobName"]) or not StartFarms or not SelectFarm == "Level" or not v:FindFirstChild("HumanoidRootPart") or v.Humanoid.Health <= 0
                                 end
                             end
-                        elseif RS:FindFirstChild(CheckQuest()["MobName"]) then
-                            ToTween(RS:FindFirstChild(CheckQuest()["MobName"]).HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+                        else
+                            if Pos == nil or Pos == "" or Pos > #CheckQuest()["Position"] then
+                                Pos = 1
+                            end
+                            pcall(function()
+                                ToTween(CheckQuest()["Position"][CheckQuest().MobName .. tostrinh(Pos)] * CFrame.new(5, 30, 5))
+                            end)
+                            Pos = Pos + 1
+                            wait(1.2)
                         end
                     end   
                 else
