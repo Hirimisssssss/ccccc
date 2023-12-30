@@ -21,7 +21,7 @@ local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/d
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 local Window = LunarLoader:CreateWindow({Title = "LunarZ Hub ", SubTitle = "by Hirimii", TabWidth = 160, Size = UDim2.fromOffset(500, 360), Acrylic = true, Theme = "Dark", MinimizeKey = Enum.KeyCode.LeftControl})
 local Z = Window:AddTab({ Title = "About", Icon = "rbxassetid://15782111043" })
-local M = Window:AddTab({ Title = "Main Farm", Icon = "rbxassetid://4483345998" })
+local A = Window:AddTab({ Title = "Main Farm", Icon = "rbxassetid://4483345998" })
 local B = Window:AddTab({ Title = "Setting", Icon = "settings" })
 local C = Window:AddTab({ Title = "Item", Icon = "rbxassetid://9606626859" })
 local D = Window:AddTab({ Title = "Raid & DF", Icon = "rbxassetid://11155986081" })
@@ -472,21 +472,12 @@ function CheckElite()
     end
 end
 function BDistanceElite()
-    if RS:FindFirstChild("Deandre") or RS:FindFirstChild("Deandre") or RS:FindFirstChild("Diablo") then
-        if GetDistance(RS:FindFirstChild("Deandre").HumanoidRootPart.Position) > 2000 then
-            BypassTele(RS:FindFirstChild("Deandre").HumanoidRootPart.CFrame)
-        elseif GetDistance(RS:FindFirstChild("Deandre").HumanoidRootPart.Position) < 2000 then
-            ToTween(RS:FindFirstChild("Deandre").HumanoidRootPart.CFrame * CFrame.new(0,30,0))
-        end
-        if GetDistance(RS:FindFirstChild("Urban").HumanoidRootPart.Position) > 2000 then
-            BypassTele(RS:FindFirstChild("Urban").HumanoidRootPart.CFrame)
-        elseif GetDistance(RS:FindFirstChild("Urban").HumanoidRootPart.Position) < 2000 then
-            ToTween(RS:FindFirstChild("Urban").HumanoidRootPart.CFrame * CFrame.new(0,30,0))
-        end
-        if GetDistance(RS:FindFirstChild("Diablo").HumanoidRootPart.Position) > 2000 then
-            BypassTele(RS:FindFirstChild("Diablo").HumanoidRootPart.CFrame)
-        elseif GetDistance(RS:FindFirstChild("Diablo").HumanoidRootPart.Position) < 2000 then
-            ToTween(RS:FindFirstChild("Diablo").HumanoidRootPart.CFrame * CFrame.new(0,30,0))
+    if RS:FindFirstChild("Deandre") or RS:FindFirstChild("Urban") or RS:FindFirstChild("Diablo") then
+        local v = RS:FindFirstChild("Deandre") or RS:FindFirstChild("Urban") or RS:FindFirstChild("Diablo")
+        if GetDistance(v.HumanoidRootPart.Position) > 2000 then
+            BypassTele(v.HumanoidRootPart.CFrame)
+        elseif GetDistance(v.HumanoidRootPart.Position) < 2000 then
+            ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,30,0))
         end
     end
 end
@@ -554,15 +545,6 @@ function CheckMasSkill()
         return SMasWeapon, nil
     end
 end
-spawn(function()
-    while wait() do
-        if StartFarms or SaberQ or Eliten then
-            NoClip = true
-        else
-            StopTween()
-        end
-    end
-end)
 function CheckSwan()
     for r, v in pairs(Enemies:GetChildren()) do
         if v.Name == "Swan Pirate" and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
