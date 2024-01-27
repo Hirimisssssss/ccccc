@@ -1,4 +1,4 @@
---Hirimi Hub Hyper - Rewrite Fixed & Update #21
+--Hirimi Hub Hyper - Rewrite Fixed & Update #22
 repeat wait() until game:IsLoaded()
 notis = require(game.ReplicatedStorage:WaitForChild("Notification"))
 notis.new("<Color=White>HIRIMI HUB HYPER<Color=/>"):Display()
@@ -1276,35 +1276,34 @@ spawn(function()
             df = checkskillDF()
             gun = checkskillGun()
             if df and SpamDFs and not string.find(LP.Data.DevilFruit.Value, "Portal") and df ~= "F" then
-                print("Spam Status: Devil Fruit")
                 EWeaponSelect(LP.Data.DevilFruit.Value)
                 local condimebeo = checkskillDF()
                 if condimebeo then
                     SendKeyEvents(condimebeo)
                 end
-            elseif checkskillMelee() and SpamMelees then
-                print("Spam Status: Melee")
+            end
+            if checkskillMelee() and SpamMelees then
                 EWeaponSelect(NameMelee())
                 local condimebeo = checkskillMelee()
                 if condimebeo then
                     SendKeyEvents(condimebeo)
                 end
-            elseif checkskillSword() and SpamSwords then
+            end
+            if checkskillSword() and SpamSwords then
                 print("Spam Status: Sword")
                 EWeaponSelect(NameSword())
                 local condimebeo = checkskillSword()
                 if condimebeo then
                     SendKeyEvents(condimebeo)
                 end
-            elseif checkskillGun() and SpamGuns then
+            end
+            if checkskillGun() and SpamGuns then
                 print("Spam Status: Gun")
                 local condimebeo = checkskillGun()
                 EWeaponSelect(NameGun())
                 if condimebeo then
                     SendKeyEvents(condimebeo)
                 end
-            else
-                EquipAllWeapon()
             end
         end
     end
@@ -1549,7 +1548,7 @@ task.spawn(function()
             end
             pcall(function()
                 for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v.Humanoid.Health > 0 then
+                    if not MasteryOption and v.Humanoid.Health > 0 then
                         if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 100 then
                             FastAttack()
                             task.wait()
@@ -1571,7 +1570,7 @@ task.spawn(function()
             end
             pcall(function()
                 for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v.Humanoid.Health > 0 then
+                    if not MasteryOption and v.Humanoid.Health > 0 then
                         if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 100 then
                             task.wait(.000025)
                             Unboost()
