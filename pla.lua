@@ -1,4 +1,4 @@
---Hirimi Hub Hyper - Rewrite Fixed & Update #22
+--Hirimi Hub Hyper - Rewrite Fixed & Update #22.2
 repeat wait() until game:IsLoaded()
 notis = require(game.ReplicatedStorage:WaitForChild("Notification"))
 notis.new("<Color=White>HIRIMI HUB HYPER<Color=/>"):Display()
@@ -914,21 +914,65 @@ function TimBlueGearDitmemay()
         ToTween(BlueGear.CFrame)
     end
 end
+function FindPosBring(positionList)
+    local totalPosition = Vector3.new()
+    local validCount = 0
+    for i = 1, #positionList do
+        local position = positionList[i]
+        local isFarEnough = true
+        for j = 1, #positionList do
+            if i ~= j then
+                local distance = (position - positionList[j]).Magnitude
+                if distance >= (350 * j) then
+                    isFarEnough = false
+                    break
+                end
+            end
+        end
+        if isFarEnough then
+            totalPosition = totalPosition + position
+            validCount = validCount + 1
+        end
+    end
+    local averagePosition = totalPosition / validCount
+    return averagePosition
+end
+function checkfunc(a)
+    if a and a.Parent then
+        if a:FindFirstChild("Humanoid") and a:FindFirstChild("HumanoidRootPart") and a.Humanoid.Health > 0 and a.HumanoidRootPart.CFrame then
+            return true
+        else
+            return false
+        end
+    else
+        return false
+    end
+end 
 spawn(function()
     while wait() do
         for i,v in pairs(Enemies:GetChildren()) do
             if ((StartFarms and SelectFarm == "Level" and StartBring and v.Name == CheckQuest()["MobName"]) or (FarmSkip and StartBring and v.Name == "Shanda") or (StartFarms and SelectFarm == "Bone" and StartBring and CheckBoneMob()) or (StartFarms and SelectFarm == "Cake Prince" and StartBring and CheckCakeMob()) or (MobArua and StartBring)) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and GetDistance(v.HumanoidRootPart.Position) <= 350 then
-                v.HumanoidRootPart.CFrame = PosMon
-                v.HumanoidRootPart.Size = Vector3.new(50,50,50)                                               
-                v.HumanoidRootPart.CanCollide = false
-                v.Head.CanCollide = false
-                v.Humanoid.JumpPower = 0
-                v.Humanoid.WalkSpeed = 0
-                if v.Humanoid:FindFirstChild("Animator") then
-                    v.Humanoid.Animator:Destroy()
+                BringList = {}
+                BringPos = nil
+                for j, k in pairs(Enemies:GetChildren()) do
+                    if checkfunc(k) and v.Name == k.Name then
+                        table.insert(BringList, k.HumanoidRootPart.Position)
+                    end
                 end
-                v.Humanoid:ChangeState(14)
-                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius",  math.huge)
+                BringPos = FindPosBring(BringList)
+                if BringPos == nil then return end
+                for j, k in pairs(Enemies:GetChildren()) do
+                    if checkfunc(k) and v.Name == k.Name and (k.HumanoidRootPart.Position - BringPos).Magnitude <= 350 then
+                        k.PrimaryPart.Position = BringPos
+                        k.PrimaryPart.CFrame = CFrame.new(BringPos)
+                        k.HumanoidRootPart.CFrame = CFrame.new(BringPos)
+                        k.Humanoid.JumpPower = 0
+                        k.Humanoid.WalkSpeed = 0
+                        k.HumanoidRootPart.CanCollide = false
+                        sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                        k.Humanoid:ChangeState(14)
+                    end
+                end
             end
         end
     end
@@ -1435,31 +1479,31 @@ end
 Loop:Connect(function()
     if FastDelay == nil then
         if MasteryOption then
-            FastDelay = 2.2
+            FastDelay = 3
         else
             FastDelay = 0.3
         end
     elseif FastDelay == "0.1" then
         if MasteryOption then
-            FastDelay = 2.2
+            FastDelay = 3
         else
             FastDelay = 0.11
         end
     elseif FastDelay == "0.15" then
         if MasteryOption then
-            FastDelay = 2.2
+            FastDelay = 3
         else
             FastDelay = 0.18
         end
     elseif FastDelay == "0.175" then
         if MasteryOption then
-            FastDelay = 2.2
+            FastDelay = 3
         else
             FastDelay = 0.3
         end
     elseif FastDelay == "0.2" then
         if MasteryOption then
-            FastDelay = 2.2
+            FastDelay = 3
         else
             FastDelay = 0.5
         end
