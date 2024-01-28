@@ -1,4 +1,4 @@
---Hirimi Hub Hyper - Rewrite Fixed & Update #22.2
+--Hirimi Hub Hyper - Rewrite Fixed & Update #22.3
 repeat wait() until game:IsLoaded()
 notis = require(game.ReplicatedStorage:WaitForChild("Notification"))
 notis.new("<Color=White>HIRIMI HUB HYPER<Color=/>"):Display()
@@ -399,7 +399,7 @@ local x2Code = {
 }
 function EClick()
     game:GetService("VirtualUser"):CaptureController()
-    game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+    game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 1, 0, 1))
 end
 function GetWeapon(bh)
     s = ""
@@ -455,6 +455,11 @@ local angle = 0
 function getNextPosition(center)
     angle = angle + 5
     return center + Vector3.new(math.sin(math.rad(angle)) * radius, 0, math.cos(math.rad(angle)) * radius)
+end
+local radius2 = 120
+function getNextPosition2(center)
+    angle = angle + 5
+    return center + Vector3.new(math.sin(math.rad(angle)) * radius2, 0, math.cos(math.rad(angle)) * radius2)
 end
 spawn(function()
     game:GetService("RunService").Stepped:Connect(function()
@@ -1930,7 +1935,7 @@ spawn(function()
                                     end
                                     v.HumanoidRootPart.Size = Vector3.new(50,50,50)  
                                     v.HumanoidRootPart.CanCollide = false
-                                    PosMon = v.HumanoidRootPart.CFrame
+                                    BringPos = v.HumanoidRootPart.CFrame
                                     NoClip = true
                                     StartBring = true
                                 until not StartFarms or not SelectFarm == "Level" or v.Humanoid.Health <= 0 or not v:FindFirstChild("HumanoidRootPart")
@@ -1941,7 +1946,7 @@ spawn(function()
                         if EnemySpawns:FindFirstChild(CheckQuest()["MobName"]) then
                             for i,v in pairs(EnemySpawns:GetChildren()) do
                                 if v.Name == CheckQuest()["MobName"] then
-                                    ToTween(v.CFrame * CFrame.new(0,15,0))
+                                    ToTween(getNextPosition2(v.CFrame * CFrame.new(0,15,0)))
                                 end
                             end
                         end
@@ -2015,7 +2020,7 @@ spawn(function()
                             end
                             v.HumanoidRootPart.Size = Vector3.new(50,50,50)  
                             v.HumanoidRootPart.CanCollide = false
-                            PosMon = v.HumanoidRootPart.CFrame
+                            BringPos = v.HumanoidRootPart.CFrame
                             NoClip = true
                             StartBring = true
                         until not StartFarms or not SelectFarm == "Bone" or not v or not v:FindFirstChild("Humanoid") or not v:FindFirstChild("HumanoidRootPart") or v.Humanoid.Health <= 0
@@ -2099,7 +2104,7 @@ spawn(function()
                             end
                             v.HumanoidRootPart.Size = Vector3.new(50,50,50)  
                             v.HumanoidRootPart.CanCollide = false
-                            PosMon = v.HumanoidRootPart.CFrame
+                            BringPos = v.HumanoidRootPart.CFrame
                             StartBring = true
                         until not StartFarms or not SelectFarm == "Cake Prince" or not v or not v:FindFirstChild("Humanoid") or not v:FindFirstChild("HumanoidRootPart") or v.Humanoid.Health <= 0
                         StartBring = false
