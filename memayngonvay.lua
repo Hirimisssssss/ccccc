@@ -343,7 +343,7 @@ end
 function BringMobNear(cc)
     if type(cc) == "table" then
         for i,v in game.Workspace.Enemies:GetChildren() do
-            if table.find(cc, v.Name) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= getgenv()["Distance Bring"] then
+            if table.find(cc, v.Name) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= BringDis then
                 v.HumanoidRootPart.CFrame = PosBring
                 v.Humanoid.JumpPower = 0
                 v.Humanoid.WalkSpeed = 0
@@ -354,7 +354,7 @@ function BringMobNear(cc)
         end
     else
         for i,v in game.Workspace.Enemies:GetChildren() do
-            if v.Name == cc and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= getgenv()["Distance Bring"] then
+            if v.Name == cc and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= BringDis then
                 v.HumanoidRootPart.CFrame = PosBring
                 v.Humanoid.JumpPower = 0
                 v.Humanoid.WalkSpeed = 0
@@ -371,7 +371,7 @@ local A = HirimiHub:CreateTab({Name = "Main", Icon = "rbxassetid://16410678154"}
 local I = HirimiHub:CreateTab({Name = "DF & Raid", Icon = "rbxassetid://16410678154"})
 local L = HirimiHub:CreateTab({Name = "Setting", Icon = "rbxassetid://16410678154"})
 A:AddSeperator("Auto Farm")
-A:AddToggle({Title = "Auto Level", Content = "Auto Claim Quest & Kill Mob In Quest To Up Level", Default = false, Callback = function(vFarmLevel)
+A:AddToggle({Title = "Auto Level", Content = "Auto Claim Quest & Kill Mob In Quest To Up Level~", Default = false, Callback = function(vFarmLevel)
     getgenv().Level = vFarmLevel
 end
 })
@@ -391,19 +391,18 @@ spawn(function()
                     ToTween(NPCPos())
                 end
             else
-                if game.Workspace.Enemies:FindFirstChild(GetCurrentQuest().Mob) then
-                    for i,v in game.Workspace.Enemies:GetChildren() do
-                        if v.Name == GetCurrentQuest().Mob then
-                            repeat task.wait()
-                                ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                EquipTool()
-                                PosBring = v.HumanoidRootPart.CFrame
-                                BringMobNear(v.Name)
-                                Buso()
-                                Click()
-                            until not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health <= 0 or not getgenv().Level
-                            UnEquipTool(GetWeapon(getgenv()["SelectTool"]))
-                        end
+                if CheckMob(GetCurrentQuest().Mob) then
+                    local v = CheckMob(GetCurrentQuest().Mob)
+                    if v then
+                        repeat task.wait()
+                            ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            EquipTool()
+                            PosBring = v.HumanoidRootPart.CFrame
+                            BringMobNear(v.Name)
+                            Buso()
+                            Click()
+                        until not v or not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health <= 0 or not getgenv().Level
+                        UnEquipTool(GetWeapon(getgenv()["SelectTool"]))
                     end
                 else
                     if CheckEnemySpawns(GetCurrentQuest().Mob) then
@@ -790,9 +789,10 @@ end)
 L:AddSeperator("Bring Mob")
 L:AddSlider({Title = "Bring Mob Radius", Min = 0, Max = 400, Increment = 1, Default = 270, ValueName = "Radius",
 	Callback = function(vDistanceFromBring) 
-		getgenv()["Distance Bring"] = vDistanceFromBring
+		BringDis = vDistanceFromBring
 	end
 })
+BringDis = 270
 L:AddSeperator("Misc Setting")
 L:AddToggle({Title = "Auto Summon Cake Prince", Content = "", Default = false, Callback = function(vKatakuriC)
     getgenv().SummonC = vKatakuriC
