@@ -371,7 +371,7 @@ local A = HirimiHub:CreateTab({Name = "Main", Icon = "rbxassetid://16410678154"}
 local I = HirimiHub:CreateTab({Name = "DF & Raid", Icon = "rbxassetid://16410678154"})
 local L = HirimiHub:CreateTab({Name = "Setting", Icon = "rbxassetid://16410678154"})
 A:AddSeperator("Auto Farm")
-A:AddToggle({Title = "Auto Level", Content = "", Default = false, Callback = function(vFarmLevel)
+A:AddToggle({Title = "Auto Level", Content = "Auto Claim Quest & Kill Mob In Quest To Up Level", Default = false, Callback = function(vFarmLevel)
     getgenv().Level = vFarmLevel
 end
 })
@@ -391,18 +391,19 @@ spawn(function()
                     ToTween(NPCPos())
                 end
             else
-                if CheckMob(GetCurrentQuest().Mob) then
-                    local v = CheckMob(GetCurrentQuest().Mob)
-                    if v then
-                        repeat task.wait()
-                            ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                            EquipTool()
-                            PosBring = v.HumanoidRootPart.CFrame
-                            BringMobNear(v.Name)
-                            Buso()
-                            Click()
-                        until not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health <= 0 or not getgenv().Level
-                        UnEquipTool(GetWeapon(getgenv()["SelectTool"]))
+                if game.Workspace.Enemies:FindFirstChild(GetCurrentQuest().Mob) then
+                    for i,v in game.Workspace.Enemies:GetChildren() do
+                        if v.Name == GetCurrentQuest().Mob then
+                            repeat task.wait()
+                                ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                                EquipTool()
+                                PosBring = v.HumanoidRootPart.CFrame
+                                BringMobNear(v.Name)
+                                Buso()
+                                Click()
+                            until not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health <= 0 or not getgenv().Level
+                            UnEquipTool(GetWeapon(getgenv()["SelectTool"]))
+                        end
                     end
                 else
                     if CheckEnemySpawns(GetCurrentQuest().Mob) then
