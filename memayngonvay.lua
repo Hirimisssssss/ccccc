@@ -25,7 +25,6 @@ function GetNearestPartAB(startPos,Folder)
     end
     return Nearest
 end
-
 local EnemyMidPoint = {}
 local EnemyCount = {}
 for k,v in workspace._WorldOrigin.EnemySpawns:GetChildren() do 
@@ -198,6 +197,74 @@ function CheckEnemySpawns(b)
 end
 local CameraShaker = require(game.ReplicatedStorage.Util.CameraShaker)
 CameraShaker:Stop()
+function CheckNearestTeleporter(aI)
+    vcspos = aI.Position
+    min = math.huge
+    min2 = math.huge
+    local y = game.PlaceId
+    if y == 2753915549 then
+        OldWorld = true
+    elseif y == 4442272183 then
+        NewWorld = true
+    elseif y == 7449423635 then
+        ThreeWorld = true
+    end
+    if ThreeWorld then
+        TableLocations = {
+            ["Caslte On The Sea"] = Vector3.new(-5058.77490234375, 314.5155029296875, -3155.88330078125),
+            ["Hydra"] = Vector3.new(5756.83740234375, 610.4240112304688, -253.9253692626953),
+            ["Mansion"] = Vector3.new(-12463.8740234375, 374.9144592285156, -7523.77392578125),
+            ["Great Tree"] = Vector3.new(28282.5703125, 14896.8505859375, 105.1042709350586),
+            ["Ngu1"] = Vector3.new(-11993.580078125, 334.7812805175781, -8844.1826171875),
+            ["ngu2"] = Vector3.new(5314.58203125, 25.419387817382812, -125.94227600097656)
+        }
+    elseif NewWorld then
+        TableLocations = {
+            ["Mansion"] = Vector3.new(-288.46246337890625, 306.130615234375, 597.9988403320312),
+            ["Flamingo"] = Vector3.new(2284.912109375, 15.152046203613281, 905.48291015625),
+            ["122"] = Vector3.new(923.21252441406, 126.9760055542, 32852.83203125),
+            ["3032"] = Vector3.new(-6508.5581054688, 89.034996032715, -132.83953857422)
+        }
+    elseif OldWorld then
+        TableLocations = {
+            ["1"] = Vector3.new(-7894.6201171875, 5545.49169921875, -380.2467346191406),
+            ["2"] = Vector3.new(-4607.82275390625, 872.5422973632812, -1667.556884765625),
+            ["3"] = Vector3.new(61163.8515625, 11.759522438049316, 1819.7841796875),
+            ["4"] = Vector3.new(3876.280517578125, 35.10614013671875, -1939.3201904296875)
+        }
+    end
+    TableLocations2 = {}
+    for r, v in pairs(TableLocations) do
+        TableLocations2[r] = (v - vcspos).Magnitude
+    end
+    for r, v in pairs(TableLocations2) do
+        if v < min then
+            min = v
+            min2 = v
+        end
+    end
+    for r, v in pairs(TableLocations2) do
+        if v < min then
+            min = v
+            min2 = v
+        end
+    end
+    for r, v in pairs(TableLocations2) do
+        if v <= min then
+            choose = TableLocations[r]
+        end
+    end
+    min3 = (vcspos - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    if min2 <= min3 then
+        return choose
+    end
+end
+function ReEntrace(b)
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", b)
+    humanoid = game.Players.LocalPlayer.Character.HumanoidRootPart
+    humanoid.CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.X, game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Y + 50, game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Z)
+    task.wait(0.5)
+end
 function ToTween(Pos, Speed)
     if not Speed or Speed == nil then
         Speed = 300
@@ -217,6 +284,13 @@ function ToTween(Pos, Speed)
         if v:IsA("BasePart") then
             v.CanCollide = false
         end
+    end
+    local Il = CheckNearestTeleporter(Pos)
+    if Il then
+        pcall(function()
+            tween:Cancel()
+        end)
+        ReEntrace(Il)
     end
     tween = game:GetService("TweenService"):Create(
         game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
@@ -269,7 +343,7 @@ end
 function BringMobNear(cc)
     if type(cc) == "table" then
         for i,v in game.Workspace.Enemies:GetChildren() do
-            if table.find(cc, v.Name) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 270 then
+            if table.find(cc, v.Name) and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= getgenv()["Distance Bring"] then
                 v.HumanoidRootPart.CFrame = PosBring
                 v.Humanoid.JumpPower = 0
                 v.Humanoid.WalkSpeed = 0
@@ -280,7 +354,7 @@ function BringMobNear(cc)
         end
     else
         for i,v in game.Workspace.Enemies:GetChildren() do
-            if v.Name == cc and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= 270 then
+            if v.Name == cc and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude <= getgenv()["Distance Bring"] then
                 v.HumanoidRootPart.CFrame = PosBring
                 v.Humanoid.JumpPower = 0
                 v.Humanoid.WalkSpeed = 0
@@ -317,19 +391,18 @@ spawn(function()
                     ToTween(NPCPos())
                 end
             else
-                if game.Workspace.Enemies:FindFirstChild(GetCurrentQuest().Mob) then
-                    for i,v in game.Workspace.Enemies:GetChildren() do
-                        if v.Name == GetCurrentQuest().Mob then
-                            repeat task.wait()
-                                ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
-                                EquipTool()
-                                PosBring = v.HumanoidRootPart.CFrame
-                                BringMobNear(v.Name)
-                                Buso()
-                                Click()
-                            until not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health <= 0 or not getgenv().Level
-                            UnEquipTool(GetWeapon(getgenv()["SelectTool"]))
-                        end
+                if CheckMob(GetCurrentQuest().Mob) then
+                    local v = CheckMob(GetCurrentQuest().Mob)
+                    if v then
+                        repeat task.wait()
+                            ToTween(v.HumanoidRootPart.CFrame * CFrame.new(0,20,0))
+                            EquipTool()
+                            PosBring = v.HumanoidRootPart.CFrame
+                            BringMobNear(v.Name)
+                            Buso()
+                            Click()
+                        until not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health <= 0 or not getgenv().Level
+                        UnEquipTool(GetWeapon(getgenv()["SelectTool"]))
                     end
                 else
                     if CheckEnemySpawns(GetCurrentQuest().Mob) then
@@ -714,7 +787,7 @@ spawn(function()
     end
 end)
 L:AddSeperator("Bring Mob")
-L:AddSlider({Title = "Bring Mob Radius", Min = 0, Max = 400, Increment = 1, Default = 300, ValueName = "Radius",
+L:AddSlider({Title = "Bring Mob Radius", Min = 0, Max = 400, Increment = 1, Default = 270, ValueName = "Radius",
 	Callback = function(vDistanceFromBring) 
 		getgenv()["Distance Bring"] = vDistanceFromBring
 	end
